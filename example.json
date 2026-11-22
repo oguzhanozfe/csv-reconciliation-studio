@@ -1,0 +1,5 @@
+{
+  "date_window_days": 2,
+  "bank_csv": "id,date,currency,amount,reference,description\nB18,2026-05-02,USD,89.95,INV-504,North Pier Supply\nB19,2026-05-04,USD,30.00,,Harbor Coffee\nB20,2026-05-08,EUR,-15.00,RET-99,Return fee\n",
+  "book_csv": "id,date,currency,amount,reference,description\nL60,2026-05-01,USD,89.95,INV-504,North Pier Supplies\nL61,2026-05-03,USD,30.00,,Harbor coffee team\nL62,2026-05-05,USD,30.00,,Coffee tasting\nL63,2026-05-08,USD,-15.00,RET-99,Return fee\n"
+}

@@ -1,0 +1,2 @@
+bank_id,book_id,bank_date,book_date,currency,amount,days_apart
+B18,L60,2026-05-02,2026-05-01,USD,89.95,1

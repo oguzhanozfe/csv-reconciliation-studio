@@ -1,0 +1,21 @@
+{
+  "action": "Match transactions",
+  "id": "match:8:bank:B18:book:L60",
+  "linked_source_records": [
+    "bank:B18",
+    "book:L60"
+  ],
+  "choices": {
+    "match:8:bank:B18:book:L60": ""
+  },
+  "artifacts": {
+    "reconciled.csv": {
+      "sha256": "6011e8f5350b2c3c19a290d86fa9a375cdbd0e893172e9e5a3f26302de799574",
+      "changed_by_approval": true
+    },
+    "unmatched.csv": {
+      "sha256": "27ea5239072859f4afb9a479d46bed9a92b53c34f79d7c3c267313b7b24cdc70",
+      "changed_by_approval": true
+    }
+  }
+}

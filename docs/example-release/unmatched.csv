@@ -1,0 +1,6 @@
+source,id,date,currency,amount,description
+bank,B19,2026-05-04,USD,30.00,Harbor Coffee
+bank,B20,2026-05-08,EUR,-15.00,Return fee
+book,L61,2026-05-03,USD,30.00,Harbor coffee team
+book,L62,2026-05-05,USD,30.00,Coffee tasting
+book,L63,2026-05-08,USD,-15.00,Return fee
