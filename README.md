@@ -2,11 +2,13 @@
 
 Reconcile two ledger exports into a one-to-one settlement register with an explicit unmatched queue.
 
-[![Verify](https://github.com/oguzhanozfe/csv-reconciliation-studio/actions/workflows/check.yml/badge.svg)](https://github.com/oguzhanozfe/csv-reconciliation-studio/actions/workflows/check.yml) · [Deploy to Render](https://render.com/deploy?repo=https://github.com/oguzhanozfe/csv-reconciliation-studio) · [Input guide](GUIDE.md)
+**[Open the live demo](https://oguzhanozfe.github.io/csv-reconciliation-studio/)** · [![Verify](https://github.com/oguzhanozfe/csv-reconciliation-studio/actions/workflows/check.yml/badge.svg)](https://github.com/oguzhanozfe/csv-reconciliation-studio/actions/workflows/check.yml) · [Deploy to Render](https://render.com/deploy?repo=https://github.com/oguzhanozfe/csv-reconciliation-studio) · [Input guide](GUIDE.md)
 
 Two ledgers agree on an amount but disagree about which payment it belongs to. Compare the dates and references, approve one pairing, and retain the remaining entries for follow-up.
 
 ![Example result for CSV Reconciliation Studio](docs/result.png)
+
+The live demo lets you edit the input, search proposed changes with an on-device model and download the result. [Browser demo details](demo/DEMO.md)
 
 ## Try it
 

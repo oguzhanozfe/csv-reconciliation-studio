@@ -1,0 +1,19 @@
+{
+  "model": "gemma-4-e4b-it",
+  "provider": "local",
+  "source_sha256": "510f617a07d9fabce1dabac7db57b8683a4b8f73487bea1b0c5ca5207250bd69",
+  "considered": 3,
+  "total": 3,
+  "recommendations": [
+    {
+      "id": "match:8:bank:B18:book:L60",
+      "evidence_id": "bank:B18",
+      "why": "This match is strongly supported by matching amounts, a 1-day date distance, and an identical reference number (INV-504)."
+    },
+    {
+      "id": "match:8:bank:B19:book:L61",
+      "evidence_id": "book:L61",
+      "why": "Although the references are missing, the transactions match in amount and date and have a high description similarity (0.839), making this an ambiguous candidate for review."
+    }
+  ]
+}
