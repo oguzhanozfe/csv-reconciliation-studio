@@ -1,0 +1,27 @@
+[
+  {
+    "candidate_id": "match:8:bank:B13:book:L41",
+    "bank_id": "B13",
+    "book_id": "L41",
+    "status": "excluded_by_approved_match",
+    "approved_matches": [
+      "match:8:bank:B13:book:L42"
+    ],
+    "signoff": null
+  },
+  {
+    "candidate_id": "match:8:bank:B13:book:L42",
+    "bank_id": "B13",
+    "book_id": "L42",
+    "status": "approved",
+    "approved_matches": [
+      "match:8:bank:B13:book:L42"
+    ],
+    "signoff": {
+      "case_id": "CASE-014",
+      "role": "settlement_controller",
+      "advice_reference": "ADVICE-742",
+      "reason": "Synthetic processor advice ADVICE-742 maps statement row B13 to batch BATCH-742 on L42. L41 is a separate payout with the same amount and an earlier posting date."
+    }
+  }
+]

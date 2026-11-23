@@ -37,6 +37,17 @@ python app.py analyze example.json
 python app.py export example.json --approve "match:8:bank:B18:book:L60" --out reviewed.zip
 ```
 
+## Resolve an ambiguous payment
+
+In the [synthetic TRY settlement](examples/settlement-signoff.json), one bank credit of TRY 1,200 has two possible book entries. L41 matches the posting date and description. The controller's settlement advice ties that credit to batch BATCH-742 on L42. After the reviewer approves L42, the register clears B13 against L42 and leaves L41 open. The [exported decision trace](docs/settlement-decisions.json) records the case, controller role, advice reference, rationale and disposition of both candidates.
+
+```sh
+python app.py analyze examples/settlement-signoff.json
+python app.py export examples/settlement-signoff.json --approve "match:8:bank:B13:book:L42" --out settlement.zip
+```
+
+To inspect the same case in the [live demo](https://oguzhanozfe.github.io/csv-reconciliation-studio/), import the fixture under **Source data** and select the B13/L42 pair. The [method guide](GUIDE.md) describes the review rules and scope.
+
 ## Model-assisted review
 
 With a local model in Ollama or LM Studio, Azure OpenAI, Amazon Bedrock, or a compatible API connected, select **Request suggestions**. The model examines up to eight candidate actions. Each displayed suggestion links to one of that action's source records. Approving a change and recording a review note remain explicit reviewer actions.

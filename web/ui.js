@@ -57,6 +57,10 @@ function cards() {
     const label = element("label"), check = element("input");
     check.type = "checkbox";
     check.checked = state.choices.has(item.id);
+    if (item.settlement_signoff === null) {
+      check.disabled = true;
+      card.append(element("small", "Awaiting controller sign-off for this pair"));
+    }
     label.append(check, element("span", item.action));
     const note = element("textarea");
     note.rows = 2; note.maxLength = 1200; note.placeholder = "Optional review note";

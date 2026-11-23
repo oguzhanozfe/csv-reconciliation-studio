@@ -2,6 +2,7 @@
 
 import csv
 import io
+import json
 import re
 from collections import defaultdict
 from datetime import date
@@ -106,6 +107,42 @@ def read_ledger(raw, side):
     return records
 
 
+def attach_settlement_signoffs(candidates, signoffs):
+    ambiguous = {}
+    for candidate in candidates:
+        if candidate["ambiguous"]:
+            candidate["settlement_signoff"] = None
+            ambiguous[candidate["bank_id"], candidate["book_id"]] = candidate
+    if not isinstance(signoffs, list) or len(signoffs) > len(ambiguous):
+        raise ValueError("Provide at most one sign-off per ambiguous candidate.")
+    cases, allocated = set(), set()
+    for record in signoffs:
+        if not isinstance(record, dict):
+            raise ValueError("Each settlement sign-off must be an object.")
+        case = identifier(record.get("case_id"), "case_id")
+        bank = identifier(record.get("bank_id"), "bank_id")
+        book = identifier(record.get("book_id"), "book_id")
+        advice = identifier(record.get("advice_reference"), "advice_reference")
+        reason = record.get("reason")
+        if record.get("role") != "settlement_controller":
+            raise ValueError("An ambiguous payment requires a settlement_controller sign-off.")
+        if not isinstance(reason, str) or not 1 <= len(reason.strip()) <= 1200:
+            raise ValueError("A sign-off needs a reason of 1 to 1,200 characters.")
+        candidate = ambiguous.get((bank, book))
+        if candidate is None:
+            raise ValueError("The sign-off must identify a current ambiguous candidate.")
+        if case in cases or allocated.intersection(candidate["evidence_ids"]):
+            raise ValueError("Sign-offs must have unique cases and cannot allocate a ledger row twice.")
+        cases.add(case)
+        allocated.update(candidate["evidence_ids"])
+        candidate["settlement_signoff"] = {
+            "case_id": case,
+            "role": record["role"],
+            "advice_reference": advice,
+            "reason": reason.strip(),
+        }
+
+
 def prepare(data: dict) -> dict:
     if not isinstance(data, dict):
         raise ValueError("Provide bank_csv and book_csv.")
@@ -170,6 +207,8 @@ def prepare(data: dict) -> dict:
     )
     for c in candidates:
         c["ambiguous"] = any(degree[key] > 1 for key in c["evidence_ids"])
+    if "settlement_signoffs" in data:
+        attach_settlement_signoffs(candidates, data["settlement_signoffs"])
     return {
         "summary": f"{len(candidates)} potential pairings across {len(bank)} bank and {len(book)} book entries.",
         "metrics": {
@@ -184,13 +223,15 @@ def prepare(data: dict) -> dict:
 
 
 def export(data, evidence, approved):
-    used, rows = set(), []
+    used, rows = {}, []
     index = {r["id"]: r for r in evidence["records"]}
     for c in selected(evidence, approved):
         a, b = c["evidence_ids"]
         if a in used or b in used:
             raise ValueError("A transaction cannot be reconciled more than once.")
-        used.update([a, b])
+        if "settlement_signoff" in c and c["settlement_signoff"] is None:
+            raise ValueError("This ambiguous payment has no controller sign-off for the selected pair.")
+        used[a] = used[b] = c["id"]
         r = index[a]
         rows.append(
             [
@@ -215,7 +256,7 @@ def export(data, evidence, approved):
         for r in evidence["records"]
         if r["id"] not in used
     ]
-    return {
+    files = {
         "reconciled.csv": csv_file(
             [
                 "bank_id",
@@ -232,3 +273,27 @@ def export(data, evidence, approved):
             ["source", "id", "date", "currency", "amount", "description"], unresolved
         ),
     }
+    if "settlement_signoffs" in data:
+        trace = []
+        for candidate in evidence["candidates"]:
+            if not candidate["ambiguous"]:
+                continue
+            matches = sorted({used[key] for key in candidate["evidence_ids"] if key in used})
+            if candidate["id"] in matches:
+                state = "approved"
+            elif matches:
+                state = "excluded_by_approved_match"
+            elif candidate["settlement_signoff"]:
+                state = "awaiting_reviewer"
+            else:
+                state = "awaiting_controller"
+            trace.append({
+                "candidate_id": candidate["id"],
+                "bank_id": candidate["bank_id"],
+                "book_id": candidate["book_id"],
+                "status": state,
+                "approved_matches": matches,
+                "signoff": candidate["settlement_signoff"],
+            })
+        files["payment-decisions.json"] = json.dumps(trace, indent=2, ensure_ascii=False) + "\n"
+    return files

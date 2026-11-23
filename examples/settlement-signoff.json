@@ -1,0 +1,15 @@
+{
+  "date_window_days": 2,
+  "bank_csv": "id,date,currency,amount,reference,description\nB13,2026-06-12,TRY,1200.00,,Card settlement\n",
+  "book_csv": "id,date,currency,amount,reference,description\nL41,2026-06-12,TRY,1200.00,,Card settlement\nL42,2026-06-13,TRY,1200.00,BATCH-742,Merchant payout\n",
+  "settlement_signoffs": [
+    {
+      "case_id": "CASE-014",
+      "bank_id": "B13",
+      "book_id": "L42",
+      "role": "settlement_controller",
+      "advice_reference": "ADVICE-742",
+      "reason": "Synthetic processor advice ADVICE-742 maps statement row B13 to batch BATCH-742 on L42. L41 is a separate payout with the same amount and an earlier posting date."
+    }
+  ]
+}
